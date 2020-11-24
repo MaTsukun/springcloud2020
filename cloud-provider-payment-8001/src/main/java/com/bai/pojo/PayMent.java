@@ -17,4 +17,5 @@ import lombok.NoArgsConstructor;
 public class PayMent {
     private Long id;
     private String serial;
+
 }
