@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 public class ApplicationConfig {
-
     @Bean
     @LoadBalanced
     public RestTemplate gettemple(){

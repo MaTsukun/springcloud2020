@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @FeignClient(value ="nacos-payment-provider",fallback = PaymentFallback.class)
 public interface PaymentFeign {
-
     @GetMapping(value = "/paymentSQL/{id}")
     public CommonResult<PayMent> paymentSQL(@PathVariable("id") Long id);
-
-    }
+ }

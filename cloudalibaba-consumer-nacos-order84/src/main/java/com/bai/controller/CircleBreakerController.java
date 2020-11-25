@@ -25,7 +25,6 @@ import javax.annotation.Resource;
 @Slf4j
 public class CircleBreakerController {
     public static  final  String SERVICE_URL = "http://nacos-payment-provider";
-
     @Resource
     private RestTemplate restTemplate;
 
@@ -35,6 +34,7 @@ public class CircleBreakerController {
     @SentinelResource(value = "fallback",fallback ="handlerFallback",blockHandler = "blockHandler")
     public CommonResult<PayMent> fallback(@PathVariable Long id) {
         CommonResult<PayMent> result = restTemplate.getForObject(SERVICE_URL + "/paymentSQL/" + id, CommonResult.class,id);
+        //设置特定参数报错，进行降级
         if(id == 4){
             throw new IllegalArgumentException("IllegalArgument ,非法参数异常...");
         }else if(result.getData() == null) {
@@ -47,7 +47,6 @@ public class CircleBreakerController {
         return new CommonResult(444,"异常handlerFallback，exception内容： " + e.getMessage(), payment);
     }
 
-
     public CommonResult blockHandler(@PathVariable Long id, BlockException e) {
         PayMent payment = new PayMent(id,"null");
         return new CommonResult(444,"blockHandler-sentinel 限流，BlockException： " + e.getMessage(), payment);
@@ -56,10 +55,8 @@ public class CircleBreakerController {
     @Resource
     private PaymentFeign paymentFeign;
 
-
     @GetMapping(value = "/consumer/paymentSQL/{id}")
     public CommonResult<PayMent> paymentSQLC(@PathVariable("id") Long id){
         return paymentFeign.paymentSQL(id);
     }
-
 }
